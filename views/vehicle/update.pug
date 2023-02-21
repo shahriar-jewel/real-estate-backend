@@ -1,0 +1,77 @@
+extends ../layout
+
+block content
+ //- Breadcrumbs
+ .col.s12(style="margin-top: 0px; background: #577889; line-height: 1; padding-left: 10px;")
+    a.breadcrumb(href='/vehicle-management') Vehicle Management
+    a.breadcrumb(href='/vehicle-management') Vehicles
+    a.breadcrumb(href="/vehicle-management/details/" + vehicleToUpdate._id) Vehicle Details
+    a.breadcrumb(href='#') Update
+
+ div.valign-wrapper
+    div.row
+      div.div.col.s12.m12.l10.xl8.offset-l1.offset-xl2
+        form.col.s12(action="" method='POST')
+          div.row
+            div.input-field.col.s12
+              h5 Update Vehicle Information
+              span You can change vehicle's all information.
+            if !!errorMessage
+              div.input-field.col.s12
+                span.error #{errorMessage}
+            if !!successMessage
+              div.input-field.col.s12
+                span.success #{successMessage}
+
+            div.input-field.col.s6
+              input#regNo.validate(type="text", name="regNo" value= vehicleToUpdate.regNo required = "true") 
+              label(for="regNo") Reg No
+
+            div.input-field.col.s6
+              input#brand.validate(type="text", name="brand" value= vehicleToUpdate.brand required = "true") 
+              label(for="brand") Brand
+            
+            div.input-field.col.s6
+              input#vehicleModel.validate(type="text", name="vehicleModel" value= vehicleToUpdate.vehicleModel required = "true") 
+              label(for="vehicleModel") Model
+
+            div.input-field.col.s6
+              input#modelYear.validate(type="number", name="modelYear" value= vehicleToUpdate.modelYear required = "true") 
+              label(for="modelYear") Model Year
+
+            div.input-field.col.s12
+              input#regYear.validate(type="number", name="regYear" value= vehicleToUpdate.regYear required = "true") 
+              label(for="regYear") Reg Year
+
+            div.input-field.col.s6
+              input#trackerId.validate(type="number", name="trackerId" value= vehicleToUpdate.trackerId required = "true") 
+              label(for="trackerId") Tracker Id
+
+            div.input-field.col.s6
+              input#cardId.validate(type="number", name="cardId" value= vehicleToUpdate.cardId required = "true") 
+              label(for="cardId") Card Id
+
+           
+            div.input-field.col.s6
+              select(name="isActive" required)
+                option(value="", disabled="", selected="") Status
+                
+                if vehicleToUpdate.isActive == true
+                  option(value=1 selected="") Active
+                  option(value=0) Inactive 
+                else
+                  option(value=1) Active
+                  option(value=0 selected="") Inactive
+                  
+            div.row
+              div.input-field.col.s12
+                  button.btn.waves-effect.waves-light(style="margin-left:10px"  value='Update' type="submit") Update
+                      i.material-icons.right update
+                  a.btn.waves-effect.waves-light.urbaned.black(style="margin-left:5px" href="/vehicle-management/details/" + vehicleToUpdate._id) Return
+                    i.material-icons.right keyboard_return
+
+
+
+
+
+

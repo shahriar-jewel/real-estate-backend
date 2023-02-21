@@ -1,0 +1,91 @@
+
+//- Table for result
+div
+  span Trip Report <br>
+  span Report Between:  #{fromDate} ∼ #{toDate}
+  table(style="border-collapse: collapse !important; border: 1px solid #9e9e9e !important;")
+    tr(style="background: #515151; color: #fff;")
+      th(style="border: 1px solid #9e9e9e !important") Date
+      th(style="text-align: center;") Trip Details
+    -for(trip in trips)
+      tr
+        td(style="vertical-align: middle; border: 1px solid #9e9e9e !important")= trip
+        td
+          table(style="border-collapse: collapse !important; border: 1px solid #9e9e9e !important;")
+            tr(style="background: #ddd")
+              th(style="border: 1px solid #9e9e9e !important") Vehicle
+              th(style="border: 1px solid #9e9e9e !important") SL#
+              th(style="border: 1px solid #9e9e9e !important") Trip No
+              th(style="border: 1px solid #9e9e9e !important") Driver
+              th(style="border: 1px solid #9e9e9e !important") Dept
+              th(style="border: 1px solid #9e9e9e !important") Users
+              th(style="border: 1px solid #9e9e9e !important") Purpose
+              th(style="border: 1px solid #9e9e9e !important") Destination
+              th(style="border: 1px solid #9e9e9e !important") Start Time
+              th(style="border: 1px solid #9e9e9e !important") End Time
+              th(style="border: 1px solid #9e9e9e !important") Duration
+              th(style="border: 1px solid #9e9e9e !important") Start KM
+              th(style="border: 1px solid #9e9e9e !important") End KM
+              th(style="border: 1px solid #9e9e9e !important") Total KM
+              th(style="border: 1px solid #9e9e9e !important") History
+            -for(myTrip in trips[trip])
+                -let sl = 1
+                -for(tripList in trips[trip][myTrip])
+                  tr
+                    -if(sl === 1)
+                      td(style="vertical-align: middle; min-width: 140px; border: 1px solid #9e9e9e !important" rowspan=`${trips[trip][myTrip].length}`)=myTrip
+                                              
+                    td(style="vertical-align: middle; border: 1px solid #9e9e9e !important").center= sl++
+                    td(style="vertical-align: middle; border: 1px solid #9e9e9e !important").center= trips[trip][myTrip][tripList].tripId
+                    td(style="vertical-align: middle; border: 1px solid #9e9e9e !important")= trips[trip][myTrip][tripList].driver.name
+                    td(style="vertical-align: middle; border: 1px solid #9e9e9e !important")= trips[trip][myTrip][tripList].userDept
+                    td(style="vertical-align: middle; border: 1px solid #9e9e9e !important")
+                      -if(trips[trip][myTrip][tripList].users)
+                        -c=0
+                        each user in trips[trip][myTrip][tripList].users
+                          -if(c==0)
+                            span=user.name
+                          -else
+                            span , #{user.name}
+                          -c=1
+                    td(style="vertical-align: middle; border: 1px solid #9e9e9e !important")= trips[trip][myTrip][tripList].purpose
+                    td(style="vertical-align: middle; border: 1px solid #9e9e9e !important")= trips[trip][myTrip][tripList].destination
+                    td(style="vertical-align: middle; border: 1px solid #9e9e9e !important")= trips[trip][myTrip][tripList].startTime?  fmt.date.Time12(trips[trip][myTrip][tripList].startTime) : '-'
+                    td(style="vertical-align: middle; border: 1px solid #9e9e9e !important")= trips[trip][myTrip][tripList].endTime?  fmt.date.Time12(trips[trip][myTrip][tripList].endTime) : '-'
+                    -if(trips[trip][myTrip][tripList].startTime && trips[trip][myTrip][tripList].endTime)
+                      td(style="vertical-align: middle; border: 1px solid #9e9e9e !important")= fmt.date.timeDifference(trips[trip][myTrip][tripList].endTime,trips[trip][myTrip][tripList].startTime)
+                    -else
+                      td(style="vertical-align: middle; border: 1px solid #9e9e9e !important") -
+                    td(style="vertical-align: middle; border: 1px solid #9e9e9e !important")= trips[trip][myTrip][tripList].startKm? trips[trip][myTrip][tripList].startKm: '-'
+                    td(style="vertical-align: middle; border: 1px solid #9e9e9e !important")= trips[trip][myTrip][tripList].endKm? trips[trip][myTrip][tripList].endKm: '-'
+                    td(style="vertical-align: middle; border: 1px solid #9e9e9e !important")= trips[trip][myTrip][tripList].startKm && trips[trip][myTrip][tripList].endKm? (trips[trip][myTrip][tripList].endKm-trips[trip][myTrip][tripList].startKm) :'-'
+                    td(style="text-align: center; border: 1px solid #9e9e9e !important")
+                      a(href=`http://${hostAddress}/trip-management/trip-history/${trips[trip][myTrip][tripList].tripId}` target="_blank") Go
+
+    tr(style="background: #515151; color: #fff;")
+      th(colspan="2" style="text-align: center;") Driver Activity
+    tr
+      td(colspan="2" )
+        table(style="border-collapse: collapse !important; border: 1px solid #9e9e9e !important;")
+          tr(style="background: #ddd;")
+            th(style="border: 1px solid #9e9e9e !important") Driver Name
+            th(style="border: 1px solid #9e9e9e !important") Total Trips
+            th(style="border: 1px solid #9e9e9e !important") Total Driving Hours
+            th(style="border: 1px solid #9e9e9e !important") Total Driving KM
+          -for(dtrip in driversTrip)
+            -if(driversTrip[dtrip][0].driver.name)
+              tr
+                td(style="border: 1px solid #9e9e9e !important")=driversTrip[dtrip][0].driver.name
+                -let tripCount = 0;
+                -let totalHours = 0;
+                -let totalKm = 0;
+                -for(dtripList in driversTrip[dtrip])
+                  -tripCount++
+                  -if(driversTrip[dtrip][dtripList].endTime && driversTrip[dtrip][dtripList].startTime)
+                    -totalHours = totalHours + ( driversTrip[dtrip][dtripList].endTime - driversTrip[dtrip][dtripList].startTime )
+                  -if(driversTrip[dtrip][dtripList].endKm && driversTrip[dtrip][dtripList].startKm)
+                    -totalKm = totalKm + ( driversTrip[dtrip][dtripList].endKm - driversTrip[dtrip][dtripList].startKm )
+
+                td(style="border: 1px solid #9e9e9e !important")=tripCount
+                td(style="border: 1px solid #9e9e9e !important")=fmt.date.msToHour(totalHours)
+                td(style="border: 1px solid #9e9e9e !important")=totalKm+' KM'

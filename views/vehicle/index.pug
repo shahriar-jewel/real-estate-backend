@@ -1,0 +1,75 @@
+extends ../layout
+
+block content
+
+  //- Breadcrumbs
+  .col.s12(style="margin-top: 0px; background: #577889; line-height: 1; padding-left: 10px;")
+    a.breadcrumb(href='/vehicle-management') Vehicle Management
+    a.breadcrumb(href='') Vehicles
+
+  //- Heading
+  div.row
+    div.col.s8
+      h5 Manage Vehicles
+      span You can add new vehicle, update or delete vehicle info here.
+    div.col.s4
+      a.waves-effect.waves-light.btn-small.right(href="/vehicle-management/add/") Create New Vehicle
+  
+  //- Table for result
+  div.row
+    div.col.s12
+      div.divider
+      table.custom
+        tr.custom
+          th.custom Reg No
+          th.custom Brand
+          th.custom Model
+          th.custom Reg Year
+          th.custom Tracker Id
+          th.custom Card Id
+          th.custom.center Status
+          th.custom.center Action
+        each vehicle in vehiclePage.vehicles
+          tr.custom
+            td.custom= vehicle.regNo
+            td.custom= vehicle.brand
+            td.custom= vehicle.vehicleModel+'-'+vehicle.modelYear
+            td.custom= vehicle.regYear
+            td.custom= vehicle.trackerId
+            td.custom= vehicle.cardId
+            if(vehicle.isActive == true)
+              td.custom.center Active
+            else
+              td.custom.center Inactive
+            td.custom.center
+              a.red-effect.red.lighten-1.btn-small.mr2( href="/vehicle-management/update/"+vehicle._id) Edit
+              a.teal-effect.teal.lighten-1.btn-small.mr2(style="max-width: 100px" href="/vehicle-management/details/"+vehicle._id) Details
+
+  
+  //- Pagination & Actions
+  div.row
+    div.col.s12
+      - var n = 1;
+      - var pages = Math.ceil(vehiclePage.count/vehiclePage.size)
+      ul.pagination
+        if vehiclePage.page > 1
+          li #[a(href="/vehicle-management/" + (vehiclePage.page-1)) #[i.material-icons chevron_left]]
+        else
+          li.disabled #[a(href="/vehicle-management/" + pages) #[i.material-icons chevron_left]]
+        while n <= pages
+          if n == vehiclePage.page
+            li.active #[a(href="/vehicle-management/" + n) #{n}]
+          //- DON'T REMOVE, MIGHT BE USEFUL FOR WRAPPING LARGE PAGINATION
+          //- else if n < 2 || n == vehiclePage.page - 1 || n == vehiclePage.page + 1 || n > pages - 1
+          //-   li.waves-effect #[a(href="/vehicle-management/" + n) #{n}]
+          //- else
+          //-   li .
+          else
+            li.waves-effect #[a(href="/vehicle-management/" + n) #{n}]
+          - n++
+        if vehiclePage.page < pages
+          li #[a(href="/vehicle-management/" + (vehiclePage.page+1)) #[i.material-icons chevron_right]]
+        else
+          li.disabled #[a(href="/vehicle-management/") #[i.material-icons chevron_right]]
+
+      

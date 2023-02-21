@@ -1,0 +1,69 @@
+extends ../layout
+
+block content
+
+  //- Breadcrumbs
+  .col.s12(style="margin-top: 0px; background: #577889; line-height: 1; padding-left: 10px;")
+    a.breadcrumb(href='/users') User Management
+    a.breadcrumb(href='') Users
+
+  //- Heading
+  div.row
+    div.col.s8
+      h5 Manage Users
+      span Access control is important, you can add new user or update someone's roles here.
+    div.col.s4
+      a.waves-effect.waves-light.btn-small.right(href="/users/add") Create New User
+  
+  //- Table for result
+  div.row
+    div.col.s12
+      div.divider
+      table.custom
+        tr.custom
+          th.custom Name
+          th.custom Email
+          th.custom Designation
+          th.custom Department
+          th.custom Unit
+          th.custom Role
+          th.custom.center Action
+        each user in userPage.users
+          tr.custom
+            td.custom= user.name
+            td.custom= user.email
+            td.custom= user.designation
+            td.custom= user.department
+            td.custom= user.unit
+            td.custom= user.role
+            td.custom.center
+              a.red-effect.red.lighten-1.btn-small.mr2( href="/users/update/"+user._id) Edit
+              a.teal-effect.teal.lighten-1.btn-small.mr2(style="max-width: 100px" href="/users/details/"+user._id) Details
+  
+  //- Pagination & Actions
+  div.row
+    div.col.s12
+      - var n = 1;
+      - var pages = Math.ceil(userPage.count/userPage.size)
+      ul.pagination
+        if userPage.page > 1
+          li #[a(href="/users/" + (userPage.page-1)) #[i.material-icons chevron_left]]
+        else
+          li.disabled #[a(href="/users/" + pages) #[i.material-icons chevron_left]]
+        while n <= pages
+          if n == userPage.page
+            li.active #[a(href="/users/" + n) #{n}]
+          //- DON'T REMOVE, MIGHT BE USEFUL FOR WRAPPING LARGE PAGINATION
+          //- else if n < 2 || n == userPage.page - 1 || n == userPage.page + 1 || n > pages - 1
+          //-   li.waves-effect #[a(href="/users/" + n) #{n}]
+          //- else
+          //-   li .
+          else
+            li.waves-effect #[a(href="/users/" + n) #{n}]
+          - n++
+        if userPage.page < pages
+          li #[a(href="/users/" + (userPage.page+1)) #[i.material-icons chevron_right]]
+        else
+          li.disabled #[a(href="/users/") #[i.material-icons chevron_right]]
+
+      
