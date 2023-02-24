@@ -15,7 +15,7 @@ export class LoginController extends Controller {
      * Shall provide the login interface
      */
     public loginView(req: HttpRequest, res: HttpResponse, next: NextFunc) {
-        res.bag.pageTitle = "b-Trac Technology | Login"
+        res.bag.pageTitle = "real estate solution | Login"
         res.view("login");
     }
     /**

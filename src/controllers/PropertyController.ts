@@ -5,7 +5,7 @@ import { IUserProvider } from "../core/IUserProvider";
 import fs from "fs-extra";
 import moveFile from "move-file";
 import multiparty from "multiparty";
-import { IPropertyProvider } from "../core/IPropertyProvider";
+import { IProperty, IPropertyProvider, SquareFootage, Position } from "../core/IPropertyProvider";
 
 export class PropertyController extends Controller {
 
@@ -25,20 +25,121 @@ export class PropertyController extends Controller {
             fs.mkdirSync(localPath);
         }
         const form = new multiparty.Form();
-        const timeNow = new Date().getTime();
+        let timeNow;
+        let propertyData: any;
+        let newFilePath;
+        let currentPath;
+        let fileName;
+        let imageUrl;
+        const imageUrls: any[] = [];
         try {
             form.parse(req, async (err, fields, files) => {
-                const newFilePath = localPath + timeNow;
-                const { title, description } = fields;
-                if (!files?.image || !fields?.title || !fields?.description) return resp.send({ status: 200, error: true, message: "missing required fields!.", action: "", data: {} });
-                const currentPath = newFilePath + files.image[0].originalFilename;
-                const fileName = timeNow + files.image[0].originalFilename;
-                await fs.move(files.image[0].path, currentPath);
-                await this.PropertyProvider.createProperty(title[0], description[0], fileName).then(async slider => {
-                    slider.save();
-                    return resp.send({ status: 201, error: false, message: "home slider created successfully!.", action: "", data: {} });
+                if (err) return resp.send({ status: 201, error: false, message: err, action: "", data: {} });
+
+                timeNow = new Date().getTime();
+                newFilePath = localPath + timeNow;
+                currentPath = newFilePath + files?.imageUrl[0]?.originalFilename;
+                imageUrl = timeNow + '/' + files?.imageUrl[0]?.originalFilename;
+                await fs.move(files?.imageUrl[0]?.path, currentPath);
+
+                for (const image of files?.imageUrls) {
+                    timeNow = new Date().getTime();
+                    newFilePath = localPath + timeNow;
+                    currentPath = newFilePath + image?.originalFilename;
+                    fileName = timeNow + '/' + image?.originalFilename;
+                    imageUrls.push(fileName);
+                    await fs.move(image?.path, currentPath);
+                }
+
+                const path: string[] = ['/' + fields?.city[0], fields?.province[0], 'real estate/', fields?.unitNumber[0], fields?.streetNumber[0],
+                fields?.streetName[0], fields?.city[0], fields?.province[0], fields?.postalCode[0], fields?.mlsNum[0]
+                ];
+
+                const addressPath = [fields?.city[0], fields?.province[0], 'real estate/', fields?.neighbourhoodName[0],
+                fields?.unitNumber[0], fields?.streetNumber[0], fields?.streetName[0]]
+
+                propertyData = {
+                    price: fields?.price[0],
+                    soldPrice: fields?.soldPrice[0],
+                    bedrooms: fields?.bedrooms[0],
+                    bedroomsPartial: fields?.bedroomsPartial[0],
+                    bathrooms: fields?.bathrooms[0],
+                    bathroomsPartial: fields?.bathroomsPartial[0],
+                    squareFootage: { min: fields?.min[0], max: fields?.max[0] },
+                    isVow: fields?.isVow[0],
+                    isCrea: fields?.isCrea[0],
+                    isItsoVow: fields?.isItsoVow[0],
+                    isRental: fields?.isRental[0],
+                    unitNumber: fields?.unitNumber[0],
+                    streetNumber: fields?.streetNumber[0],
+                    streetName: fields?.streetName[0],
+                    neighbourhoodName: fields?.neighbourhoodName[0],
+                    city: fields?.city[0],
+                    imageUrl,
+                    thumbnailUrl: imageUrl,
+                    imageDesc: fields?.imageDesc[0],
+                    addedAt: fields?.addedAt[0],
+                    expiredAt: fields?.expiredAt[0],
+                    soldAt: fields?.soldAt[0],
+                    path: this.convertToSlug(path),
+                    province: fields?.province[0],
+                    addressPath: this.convertToSlug(addressPath),
+                    status: fields?.status[0],
+                    lastStatus: fields?.lastStatus[0],
+                    isImageReady: fields?.isImageReady[0],
+                    position: {
+                        type: 'Point',
+                        coordinates: [fields?.lat[0], fields?.lng[0]]
+                    },
+                    neighbourhood: fields?.neighbourhood[0],
+                    addressSlug: this.convertToSlug(addressPath),
+                    availableAt: fields?.availableAt[0],
+                    mlsNum: fields?.mlsNum[0],
+                    postalCode: fields?.postalCode[0],
+                    imageUrls,
+                    thumbnailUrls: [],
+                    misc: fields?.misc[0],
+                    virtualTourUrl: fields?.virtualTourUrl[0],
+                    description: fields?.description[0],
+                    brokerage: fields?.brokerage[0],
+                    disclaimer: fields?.disclaimer[0],
+                    type: fields?.type[0],
+                    levels: fields?.levels[0],
+                    locker: fields?.locker[0],
+                    parking: fields?.parking[0],
+                    maintenanceFees: fields?.maintenanceFees[0],
+                    taxes: fields?.taxes[0],
+                    exterior: fields?.exterior[0],
+                    basement: fields?.basement[0],
+                    garage: fields?.garage[0],
+                    driveway: fields?.driveway[0],
+                    pool: fields?.pool[0],
+                    heat: fields?.heat[0],
+                    ac: fields?.ac[0],
+                    heatingFuel: fields?.heatingFuel[0],
+                    rooms: [{
+                        type: '',
+                        level: '',
+                        width: '',
+                        length: '',
+                        unit: ''
+                    }],
+                    extras: fields?.extras[0],
+                    openHouses: fields?.openHouses[0],
+                    lotFrontage: fields?.lotFrontage[0],
+                    lotDepth: fields?.lotDepth[0],
+                    style: fields?.style[0],
+                    styleName: fields?.styleName[0],
+                    url: fields?.url[0],
+                    providerId: fields?.providerId[0],
+                    termsOfUseRequired: fields?.termsOfUseRequired[0]
+                };
+
+                await this.PropertyProvider.create(propertyData).then(async property => {
+                    property.save();
+                    return resp.send({ status: 200, error: false, message: "property created successfully!.", action: "", data: {} });
                 }).catch(async error => {
-                    return resp.send({ status: 400, error: true, message: error, action: "", data: {} });
+                    return resp.send({ status: 200, error: true, message: error, action: "", data: {} });
                 });
             });
         } catch (err) {
@@ -47,13 +148,28 @@ export class PropertyController extends Controller {
         /* tslint:enable:no-bitwise */
     }
     public async getAllProperty(req: HttpRequest, resp: HttpResponse, next: NextFunc) {
-        const hostAddress: string = req.headers.host+'/uploads/images/';
-        await this.PropertyProvider.getAllProperty().then(async sliderPage => {
+        const hostAddress: string = req.headers.host + '/uploads/images/';
+        await this.PropertyProvider.getAll().then(async sliderPage => {
             if (sliderPage.length <= 0) return resp.send({ status: 404, error: true, message: 'no data found', action: "", data: null });
             return resp.send({ status: 200, error: false, message: 'all sliders data', action: "", data: { sliders: sliderPage, hostAddress } });
         }).catch(async error => {
             return resp.send({ status: 404, error: true, message: error, action: "", data: {} });
         });
+    }
+
+    private convertToSlug(obj: any): string {
+        // filter the empty value before join to ignore empty input
+        let str = obj.filter((e: any) => e.length > 0).join('-');
+
+        // replace all special characters | symbols with a space
+        str = str.replace(/[`~!@#$%^&*()_\-+=\[\]{};:'"\\|\/,.<>?\s]/g, ' ').toLowerCase();
+
+        // trim spaces at start and end of string
+        str = str.replace(/^\s+|\s+$/gm, '');
+
+        // replace space with dash/hyphen
+        str = str.replace(/\s+/g, '-');
+        return str;
     }
 
 }

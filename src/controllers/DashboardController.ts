@@ -16,7 +16,7 @@ export class DashboardController extends Controller {
      * Shall provide the dashboard interface with stats data
      */
     public async index(req: HttpRequest, res: HttpResponse, next: NextFunc) {
-        res.bag.pageTitle = "b-Trac Technology | Dashboard"
+        res.bag.pageTitle = "real estate solution | Dashboard"
         const stats: any = [];
 
         stats.total_sessions = 1;
@@ -26,9 +26,4 @@ export class DashboardController extends Controller {
         res.bag.stats = stats;
         res.view('dashboard/admin');
     }
-
-
-
-
-
 }

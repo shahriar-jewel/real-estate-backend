@@ -4,14 +4,12 @@ import { IProperty, IPropertyProvider } from "../core/IPropertyProvider";
 
 export class PropertyProvider implements IPropertyProvider {
 
-    public async createProperty(title: string, description: string, image: string): Promise<IProperty> {
+    public async create(propertyData: object): Promise<IProperty> {
         return await PropertyModel.create({
-            title,
-            description,
-            image
+            ...propertyData
         });
     }
-    public async getAllProperty(): Promise<IProperty[]> {
-        return await PropertyModel.find({isActive : true});
+    public async getAll(): Promise<IProperty[]> {
+        return await PropertyModel.find({ isActive: true });
     }
 }

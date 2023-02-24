@@ -1,20 +1,27 @@
 import { Document } from "mongoose";
 
 export interface SquareFootage {
-    min: string,
-    max: string
+    min: number,
+    max: number
 }
 export interface Position {
     type: string,
     coordinates: []
 }
+export interface Room {
+    type: string,
+    level: string,
+    width: string,
+    length: string,
+    unit: string
+}
 export interface IProperty extends Document {
-    price: string,
-    SoldPrice: string,
-    bedrooms: string,
-    bedroomsPartial: string,
-    bathrooms: string,
-    bathroomsPartial: string,
+    price: number,
+    soldPrice: number,
+    bedrooms: number,
+    bedroomsPartial: number,
+    bathrooms: number,
+    bathroomsPartial: number,
     squareFootage: SquareFootage,
     isVow: boolean,
     isCrea: boolean,
@@ -53,7 +60,7 @@ export interface IProperty extends Document {
     type: string,
     levels: string,
     locker: string,
-    parking: boolean,
+    parking: string,
     maintenanceFees: string,
     taxes: string,
     exterior: string,
@@ -61,10 +68,10 @@ export interface IProperty extends Document {
     garage: string,
     driveway: string,
     pool: boolean,
-    heat: boolean,
-    ac: boolean,
-    heatingFuel: boolean,
-    rooms: string,
+    heat: string,
+    ac: string,
+    heatingFuel: string,
+    rooms: Room[],
     extras: string,
     openHouses: string,
     lotFrontage: string,
@@ -85,12 +92,12 @@ export interface IPropertyProvider {
     /**
      * Get property data
      */
-    getAllProperty(): Promise<IProperty[]>;
+    getAll(): Promise<IProperty[]>;
     /**
      * To create a slider
      * @param title to create for
      * @param description to create for
      * @param image to create for
      */
-    createProperty(title: string, description: string, image: string): Promise<IProperty>;
+    create(propertyData: object): Promise<IProperty>;
 }

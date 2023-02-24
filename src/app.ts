@@ -47,7 +47,7 @@ app.viewEngine("pug");
 app.setStatic(path.join(__dirname, "public"), { maxAge: 0 }); // 31557600000 turned off caching for now
 
 app.set("UserProvider", new UserProvider());
-app.set("HomeProvider", new PropertyProvider());
+app.set("PropertyProvider", new PropertyProvider());
 
 
 // Initialize and set the mailer to use
