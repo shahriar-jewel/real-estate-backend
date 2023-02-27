@@ -15,6 +15,7 @@ import { Extention } from "./Extention";
 import { Menu } from "./Menu";
 import { IMailer } from "./IMailer";
 import fs from "fs";
+import cors from 'cors';
 
 
 export class Application {
@@ -40,6 +41,8 @@ export class Application {
 
         // Create an express app and bind to our system
         this.set("Express", express());
+
+        this.Express.use(cors());
 
         // Parse incoming request bodies
         this.Express.use(bodyParser.json());
