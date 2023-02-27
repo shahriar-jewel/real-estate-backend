@@ -82,17 +82,18 @@ export interface IProperty extends Document {
     providerId: string,
     termsOfUseRequired: string
 }
-export interface ISliderPage {
+export interface IPropertyPage {
+    properties: IProperty[],
     size: number,
     page: number,
-    count: number,
-    data: IProperty[]
+    lastPage: number,
+    count: number
 }
 export interface IPropertyProvider {
     /**
      * Get property data
      */
-    getAll(): Promise<IProperty[]>;
+    getAll(page: number, size: number, searchStr?: string): Promise<IPropertyPage>;
     /**
      * To create a slider
      * @param title to create for

@@ -55,8 +55,8 @@ export class PropertyController extends Controller {
                 fields?.streetName[0], fields?.city[0], fields?.province[0], fields?.postalCode[0], fields?.mlsNum[0]
                 ];
 
-                const addressPath = [fields?.city[0], fields?.province[0], 'real estate/', fields?.neighbourhoodName[0],
-                fields?.unitNumber[0], fields?.streetNumber[0], fields?.streetName[0]]
+                const addressPath: string[] = [fields?.city[0], fields?.province[0], 'real estate/', fields?.neighbourhoodName[0],
+                fields?.unitNumber[0], fields?.streetNumber[0], fields?.streetName[0]];
 
                 propertyData = {
                     price: fields?.price[0],
@@ -148,10 +148,14 @@ export class PropertyController extends Controller {
         /* tslint:enable:no-bitwise */
     }
     public async getAllProperty(req: HttpRequest, resp: HttpResponse, next: NextFunc) {
+        let page = Number(req.query?.page);
+        if (!page || page < 1) page = 1;
+        const pageSize = Number(req.query.pageSize ? req.query.pageSize : 6);
+        const searchStr = String(req.query.searchStr ? req.query.searchStr : '');
         const hostAddress: string = req.headers.host + '/uploads/images/';
-        await this.PropertyProvider.getAll().then(async sliderPage => {
-            if (sliderPage.length <= 0) return resp.send({ status: 404, error: true, message: 'no data found', action: "", data: null });
-            return resp.send({ status: 200, error: false, message: 'all sliders data', action: "", data: { sliders: sliderPage, hostAddress } });
+        await this.PropertyProvider.getAll(page, pageSize, searchStr).then(async propertyPage => {
+            if (propertyPage.properties.length <= 0) return resp.send({ status: 404, error: true, message: 'no data found', action: "", data: null });
+            return resp.send({ status: 200, error: false, message: 'all properties data', action: "", data: propertyPage, hostAddress  });
         }).catch(async error => {
             return resp.send({ status: 404, error: true, message: error, action: "", data: {} });
         });
