@@ -60,4 +60,4 @@ dist/**/*
 yarn.lock
 
 # Ignore the default config.json
-config.json
+# config.json
