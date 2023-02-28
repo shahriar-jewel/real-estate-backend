@@ -15,7 +15,7 @@ export class PropertyProvider implements IPropertyProvider {
         const count = await PropertyModel.countDocuments(filter);
         const lastPage = Math.ceil(count / size);
         return {
-            properties: await PropertyModel.find(filter).skip(size * (page - 1)).limit(size),
+            properties: await PropertyModel.find(filter).skip(size * (page - 1)).limit(size).sort({createdAt: -1}),
             size,
             page,
             lastPage,

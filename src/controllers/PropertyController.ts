@@ -155,7 +155,7 @@ export class PropertyController extends Controller {
         const hostAddress: string = req.headers.host + '/uploads/images/';
         await this.PropertyProvider.getAll(page, pageSize, searchStr).then(async propertyPage => {
             if (propertyPage.properties.length <= 0) return resp.send({ status: 404, error: true, message: 'no data found', action: "", data: null });
-            return resp.send({ status: 200, error: false, message: 'all properties data', action: "", data: propertyPage, hostAddress  });
+            return resp.send({ status: 200, error: false, message: 'all properties data', action: "", data: propertyPage, hostAddress });
         }).catch(async error => {
             return resp.send({ status: 404, error: true, message: error, action: "", data: {} });
         });
