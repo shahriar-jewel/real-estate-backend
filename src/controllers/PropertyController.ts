@@ -39,14 +39,14 @@ export class PropertyController extends Controller {
                 timeNow = new Date().getTime();
                 newFilePath = localPath + timeNow;
                 currentPath = newFilePath + files?.imageUrl[0]?.originalFilename;
-                imageUrl = timeNow + '/' + files?.imageUrl[0]?.originalFilename;
+                imageUrl = timeNow + files?.imageUrl[0]?.originalFilename;
                 await fs.move(files?.imageUrl[0]?.path, currentPath);
 
                 for (const image of files?.imageUrls) {
                     timeNow = new Date().getTime();
                     newFilePath = localPath + timeNow;
                     currentPath = newFilePath + image?.originalFilename;
-                    fileName = timeNow + '/' + image?.originalFilename;
+                    fileName = timeNow + image?.originalFilename;
                     imageUrls.push(fileName);
                     await fs.move(image?.path, currentPath);
                 }
