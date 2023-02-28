@@ -6,6 +6,7 @@ import fs from "fs-extra";
 import moveFile from "move-file";
 import multiparty from "multiparty";
 import { IProperty, IPropertyProvider, SquareFootage, Position } from "../core/IPropertyProvider";
+import PropertyModel from "../models/PropertyModel";
 
 export class PropertyController extends Controller {
 
@@ -132,7 +133,8 @@ export class PropertyController extends Controller {
                     styleName: fields?.styleName[0],
                     url: fields?.url[0],
                     providerId: fields?.providerId[0],
-                    termsOfUseRequired: fields?.termsOfUseRequired[0]
+                    termsOfUseRequired: fields?.termsOfUseRequired[0],
+                    listingFor: fields?.listingFor[0],
                 };
 
                 await this.PropertyProvider.create(propertyData).then(async property => {
@@ -148,6 +150,11 @@ export class PropertyController extends Controller {
         /* tslint:enable:no-bitwise */
     }
     public async getAllProperty(req: HttpRequest, resp: HttpResponse, next: NextFunc) {
+        await PropertyModel.updateMany(
+            {"listingFor" : {$exists : false}},
+            {$set : {"listingFor" : 'sale'}}
+        );
+
         let page = Number(req.query?.page);
         if (!page || page < 1) page = 1;
         const pageSize = Number(req.query.pageSize ? req.query.pageSize : 6);
