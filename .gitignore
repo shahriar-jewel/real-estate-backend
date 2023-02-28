@@ -53,11 +53,11 @@ Thumbs.db
 
 # Ignore built ts files
 dist/**/*
-# build/
-# uploads/
+build/
+uploads/
 
 # ignore yarn.lock
 yarn.lock
 
 # Ignore the default config.json
-# config.json
+config.json

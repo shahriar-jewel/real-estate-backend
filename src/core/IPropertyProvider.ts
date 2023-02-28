@@ -80,7 +80,8 @@ export interface IProperty extends Document {
     styleName: string,
     url: string,
     providerId: string,
-    termsOfUseRequired: string
+    termsOfUseRequired: string,
+    listingFor: string
 }
 export interface IPropertyPage {
     properties: IProperty[],
