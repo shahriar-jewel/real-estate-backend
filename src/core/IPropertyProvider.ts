@@ -94,7 +94,7 @@ export interface IPropertyProvider {
     /**
      * Get property data
      */
-    getAll(page: number, size: number, searchStr?: string): Promise<IPropertyPage>;
+    getAll(page: number, size: number, searchStr?: string, listingFor?: string): Promise<IPropertyPage>;
     /**
      * To create a slider
      * @param title to create for
