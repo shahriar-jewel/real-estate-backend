@@ -150,10 +150,10 @@ export class PropertyController extends Controller {
         /* tslint:enable:no-bitwise */
     }
     public async getAllProperty(req: HttpRequest, resp: HttpResponse, next: NextFunc) {
-        await PropertyModel.updateMany(
-            {"listingFor" : {$exists : false}},
-            {$set : {"listingFor" : 'sale'}}
-        );
+        // await PropertyModel.updateMany(
+        //     {"listingFor" : {$exists : false}},
+        //     {$set : {"listingFor" : 'sale'}}
+        // );
 
         let page = Number(req.query?.page);
         if (!page || page < 1) page = 1;
