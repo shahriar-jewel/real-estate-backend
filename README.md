@@ -1,3 +1,3 @@
 # ABOUT #
 
-Application for btrac technology website admin panel & API engine.
+Application for real estate website admin panel & API engine.
