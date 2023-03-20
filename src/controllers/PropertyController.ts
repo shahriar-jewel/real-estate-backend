@@ -151,13 +151,13 @@ export class PropertyController extends Controller {
     }
     public async getAllProperty(req: HttpRequest, resp: HttpResponse, next: NextFunc) {
         // await PropertyModel.updateMany(
-        //     {"listingFor" : {$exists : false}},
+        //     {"listingStatus" : {$exists : false}},
         //     {$set : {"listingFor" : 'sale'}}
         // );
 
-        // await PropertyModel.updateMany({},
-        //     {$rename : {"listingFor" : 'listingType'}}
-        // );
+        await PropertyModel.updateMany({},
+            {$rename : {"listingFor" : 'listingType'}}
+        );
 
         let page = Number(req.query?.page);
         if (!page || page < 1) page = 1;
