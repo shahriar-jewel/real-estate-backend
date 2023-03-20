@@ -163,7 +163,7 @@ export class PropertyController extends Controller {
         if (!page || page < 1) page = 1;
         const pageSize = Number(req.query.pageSize ? req.query.pageSize : 6);
         const searchStr = String(req.query.searchStr ? req.query.searchStr : '');
-        const listingType = String(req.query.listingFor ? req.query.listingType : 'sale');
+        const listingType = String(req.query.listingType ? req.query.listingType : 'sale');
         const hostAddress: string = req.headers.host + '/uploads/images/';
         await this.PropertyProvider.getAll(page, pageSize, searchStr, listingType).then(async propertyPage => {
             if (propertyPage.properties.length <= 0) return resp.send({ status: 404, error: true, message: 'no data found', action: "", data: null });
