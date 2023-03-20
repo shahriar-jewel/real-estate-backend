@@ -79,7 +79,7 @@ const PropertySchema: Schema = new Schema({
     url: { type: String, required: false, default: null },
     providerId: { type: String, required: false, default: null },
     termsOfUseRequired: { type: String, required: false, default: null },
-    listingFor: { type: String, required: true },
+    listingType: { type: String, required: true },
 }, { timestamps: true });
 
 // PropertySchema.index({ username: "text" }, { unique: true } );
