@@ -152,20 +152,25 @@ export class PropertyController extends Controller {
     public async getAllProperty(req: HttpRequest, resp: HttpResponse, next: NextFunc) {
         // await PropertyModel.updateMany(
         //     {"listingStatus" : {$exists : false}},
-        //     {$set : {"listingFor" : 'sale'}}
+        //     {$set : {"listingStatus" : 'active'}}
         // );
 
-        await PropertyModel.updateMany({},
-            {$rename : {"listingFor" : 'listingType'}}
-        );
+        // await PropertyModel.updateMany({},
+        //     {$rename : {"listingFor" : 'listingType'}}
+        // );
 
         let page = Number(req.query?.page);
         if (!page || page < 1) page = 1;
-        const pageSize = Number(req.query.pageSize ? req.query.pageSize : 6);
-        const searchStr = String(req.query.searchStr ? req.query.searchStr : '');
-        const listingType = String(req.query.listingType ? req.query.listingType : 'sale');
+        const pageSize = Number(req.query?.pageSize ? req.query.pageSize : 6);
+
+
+        let searchStr = String(req.query?.searchStr? req.query.searchStr : '');
+        const queryFilter = searchStr && searchStr !== 'all' ? { "$or": [{ "mlsNum": { $regex: searchStr, $options: 'i' } }, { "streetName": { $regex: searchStr, $options: 'i' } }, { "styleName": { $regex: searchStr, $options: 'i' } }, { "city": { $regex: searchStr, $options: 'i' } }] } : '';
+        const listingType = String(req.query?.listingType ? req.query.listingType : 'sale');
+        const listingStatus = String(req.query?.listingStatus ? req.query.listingStatus : 'active');
+
         const hostAddress: string = req.headers.host + '/uploads/images/';
-        await this.PropertyProvider.getAll(page, pageSize, searchStr, listingType).then(async propertyPage => {
+        await this.PropertyProvider.getAll(page, pageSize, queryFilter, listingType, listingStatus).then(async propertyPage => {
             if (propertyPage.properties.length <= 0) return resp.send({ status: 404, error: true, message: 'no data found', action: "", data: null });
             return resp.send({ status: 200, error: false, message: 'all properties data', action: "", data: propertyPage, hostAddress });
         }).catch(async error => {

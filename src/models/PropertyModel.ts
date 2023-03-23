@@ -80,6 +80,7 @@ const PropertySchema: Schema = new Schema({
     providerId: { type: String, required: false, default: null },
     termsOfUseRequired: { type: String, required: false, default: null },
     listingType: { type: String, required: true },
+    listingStatus: { type: String, required: true },
 }, { timestamps: true });
 
 // PropertySchema.index({ username: "text" }, { unique: true } );

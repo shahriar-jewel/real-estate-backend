@@ -81,7 +81,8 @@ export interface IProperty extends Document {
     url: string,
     providerId: string,
     termsOfUseRequired: string,
-    listingType: string
+    listingType: string,
+    listingStatus: string
 }
 export interface IPropertyPage {
     properties: IProperty[],
@@ -94,12 +95,12 @@ export interface IPropertyProvider {
     /**
      * Get property data
      */
-    getAll(page: number, size: number, searchStr?: string, listingType?: string): Promise<IPropertyPage>;
+    getAll(page: number, size: number, queryFilter?: {}, listingType?: string, listingStatus? : string): Promise<IPropertyPage>;
     /**
      * To create a slider
      * @param page to create for
      * @param size to create for
-     * @param searchStr to create for
+     * @param queryFilter to create for
      * @param listingType to create for
      */
     create(propertyData: object): Promise<IProperty>;
