@@ -164,13 +164,15 @@ export class PropertyController extends Controller {
         const pageSize = Number(req.query?.pageSize ? req.query.pageSize : 6);
 
 
-        let searchStr = String(req.query?.searchStr? req.query.searchStr : '');
+        const searchStr = String(req.query?.searchStr ? req.query.searchStr : '');
         const queryFilter = searchStr && searchStr !== 'all' ? { "$or": [{ "mlsNum": { $regex: searchStr, $options: 'i' } }, { "streetName": { $regex: searchStr, $options: 'i' } }, { "styleName": { $regex: searchStr, $options: 'i' } }, { "city": { $regex: searchStr, $options: 'i' } }] } : '';
-        const listingType = String(req.query?.listingType ? req.query.listingType : 'sale');
-        const listingStatus = String(req.query?.listingStatus ? req.query.listingStatus : 'active');
+        const listingTypeFilter = String(req.query?.listingType || 'sale');
+        const listingStatusFilter = String(req.query?.listingStatus || 'active');
+        const price : any = req.query?.price || '';
+        const priceFilter = price && price !== 'any' ? { price: { $gte: Number(price.split('-')[0]), $lte: Number(price.split('-')[1]), },}: {};
 
         const hostAddress: string = req.headers.host + '/uploads/images/';
-        await this.PropertyProvider.getAll(page, pageSize, queryFilter, listingType, listingStatus).then(async propertyPage => {
+        await this.PropertyProvider.getAll(page, pageSize, queryFilter, listingTypeFilter, listingStatusFilter, priceFilter).then(async propertyPage => {
             if (propertyPage.properties.length <= 0) return resp.send({ status: 404, error: true, message: 'no data found', action: "", data: null });
             return resp.send({ status: 200, error: false, message: 'all properties data', action: "", data: propertyPage, hostAddress });
         }).catch(async error => {
