@@ -134,7 +134,8 @@ export class PropertyController extends Controller {
                     url: fields?.url[0],
                     providerId: fields?.providerId[0],
                     termsOfUseRequired: fields?.termsOfUseRequired[0],
-                    listingFor: fields?.listingFor[0],
+                    listingType: fields?.listingType[0],
+                    listingStatus: fields?.listingStatus[0],
                 };
 
                 await this.PropertyProvider.create(propertyData).then(async property => {
