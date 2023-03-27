@@ -163,15 +163,14 @@ export class PropertyController extends Controller {
         let page = Number(req.query?.page);
         if (!page || page < 1) page = 1;
         const pageSize = Number(req.query?.pageSize ? req.query.pageSize : 6);
-
-
         const searchStr = String(req.query?.searchStr ? req.query.searchStr : '');
         const queryFilter = searchStr && searchStr !== 'all' ? { "$or": [{ "mlsNum": { $regex: searchStr, $options: 'i' } }, { "streetName": { $regex: searchStr, $options: 'i' } }, { "styleName": { $regex: searchStr, $options: 'i' } }, { "city": { $regex: searchStr, $options: 'i' } }] } : '';
         const listingTypeFilter = String(req.query?.listingType || 'sale');
         const listingStatusFilter = String(req.query?.listingStatus || 'active');
         const price : any = req.query?.price || '';
         const priceFilter = price && price !== 'any' ? { price: { $gte: Number(price.split('-')[0]), $lte: Number(price.split('-')[1]), },}: {};
-        const bedRoomsFilter : number = Number(req.query?.bedrooms) || 2;
+        const bedrooms : any = Number(req.query?.bedrooms) || 'all';
+        const bedRoomsFilter : any = bedrooms && bedrooms === 'all' ? { bedrooms: { $gt: 0 },}: {bedrooms};
 
         const hostAddress: string = req.headers.host + '/uploads/images/';
         await this.PropertyProvider.getAll(page, pageSize, queryFilter, listingTypeFilter, listingStatusFilter, priceFilter, bedRoomsFilter).then(async propertyPage => {
