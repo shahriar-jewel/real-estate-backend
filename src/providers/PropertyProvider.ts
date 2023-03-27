@@ -7,12 +7,12 @@ export class PropertyProvider implements IPropertyProvider {
     public async create(propertyData: object): Promise<IProperty> {
         return await PropertyModel.create({ ...propertyData });
     }
-    public async getAll(page: number = 1, size: number = 6, queryFilter?: {}, listingType?: string, listingStatus? : string, priceFilter?: {}): Promise<IPropertyPage> {
+    public async getAll(page: number = 1, size: number = 6, queryFilter?: {}, listingType?: string, listingStatus? : string, priceFilter?: {}, bedrooms?:number): Promise<IPropertyPage> {
 
-        const count = await PropertyModel.countDocuments({...queryFilter, listingType, listingStatus, ...priceFilter});
+        const count = await PropertyModel.countDocuments({...queryFilter, listingType, listingStatus, ...priceFilter, bedrooms });
         const lastPage = Math.ceil(count / size);
         return {
-            properties: await PropertyModel.find({...queryFilter, listingType, listingStatus, ...priceFilter}).skip(size * (page - 1)).limit(size).sort({createdAt: -1}),
+            properties: await PropertyModel.find({...queryFilter, listingType, listingStatus, ...priceFilter, bedrooms }).skip(size * (page - 1)).limit(size).sort({createdAt: -1}),
             size,
             page,
             lastPage,

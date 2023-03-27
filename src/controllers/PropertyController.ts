@@ -171,9 +171,10 @@ export class PropertyController extends Controller {
         const listingStatusFilter = String(req.query?.listingStatus || 'active');
         const price : any = req.query?.price || '';
         const priceFilter = price && price !== 'any' ? { price: { $gte: Number(price.split('-')[0]), $lte: Number(price.split('-')[1]), },}: {};
+        const bedRoomsFilter : number = Number(req.query?.bedrooms) || 2;
 
         const hostAddress: string = req.headers.host + '/uploads/images/';
-        await this.PropertyProvider.getAll(page, pageSize, queryFilter, listingTypeFilter, listingStatusFilter, priceFilter).then(async propertyPage => {
+        await this.PropertyProvider.getAll(page, pageSize, queryFilter, listingTypeFilter, listingStatusFilter, priceFilter, bedRoomsFilter).then(async propertyPage => {
             if (propertyPage.properties.length <= 0) return resp.send({ status: 404, error: true, message: 'no data found', action: "", data: null });
             return resp.send({ status: 200, error: false, message: 'all properties data', action: "", data: propertyPage, hostAddress });
         }).catch(async error => {
